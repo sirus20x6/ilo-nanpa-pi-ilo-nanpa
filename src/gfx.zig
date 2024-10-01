@@ -18,34 +18,37 @@ projection_matrix_bind_group: *gpu.BindGroup,
 projection_matrix_buffer: *gpu.Buffer,
 vertex_buffer: *gpu.Buffer,
 atlas: std.json.Parsed(Atlas),
-codepoint_mapping: std.AutoHashMap(u21, Atlas.Bounds),
+codepoint_mapping: std.AutoHashMap(u32, Atlas.Bounds),
 
 const Self = @This();
 
-pub fn getTexUVsFromAtlas(self: Self, codepoint: u21) Atlas.Bounds {
+pub fn getTexUVsFromAtlas(self: Self, codepoint: u32) Atlas.Bounds {
+    std.debug.print("codepoint: {}\n", .{codepoint});
     if (self.codepoint_mapping.get(codepoint)) |bounds| {
         return bounds;
     }
-
     unreachable;
 }
 
-pub fn getTexSizeFromAtlas(self: Self, codepoint: u21) math.Vec2 {
+pub fn getTexSizeFromAtlas(self: Self, codepoint: u32) math.Vec2 {
     if (self.codepoint_mapping.get(codepoint)) |bounds| {
         return math.vec2(
             (bounds.right - bounds.left) * @as(f32, @floatFromInt(self.atlas.value.atlas.width)),
             (bounds.bottom - bounds.top) * @as(f32, @floatFromInt(self.atlas.value.atlas.height)),
         );
     }
-
+    std.debug.print("getTexSizeFromAtlas\n", .{});
     unreachable;
 }
 
 pub fn init() !Self {
+    std.debug.print("Gfx init: Starting\n", .{});
     const atlas = try Atlas.readAtlas(core.allocator);
+    std.debug.print("allocation\n", .{});
 
-    var codepoint_mapping = std.AutoHashMap(u21, Atlas.Bounds).init(core.allocator);
 
+    var codepoint_mapping = std.AutoHashMap(u32, Atlas.Bounds).init(core.allocator);
+    std.debug.print("codepoint_mapping\n", .{});
     for (atlas.value.glyphs) |glyph| {
         if (glyph.atlasBounds) |bounds| {
             try codepoint_mapping.put(glyph.unicode, .{
@@ -56,11 +59,14 @@ pub fn init() !Self {
             });
         }
     }
+        std.debug.print("after glyph for loop\n", .{});
 
     var img_stream = zigimg.Image.Stream{ .const_buffer = .{ .pos = 0, .buffer = @embedFile("atlas.png") } };
+    std.debug.print("img_stream\n", .{});
     var image = try zigimg.png.load(&img_stream, core.allocator, .{ .temp_allocator = core.allocator });
+    std.debug.print("var image\n", .{});
     defer image.deinit();
-
+    std.debug.print("defer image deinit\n", .{});
     var tex = core.device.createTexture(&gpu.Texture.Descriptor.init(.{
         .label = "sdf",
         .usage = .{ .copy_dst = true, .texture_binding = true },
@@ -72,6 +78,7 @@ pub fn init() !Self {
         .view_formats = &.{},
     }));
     defer tex.release();
+    std.debug.print("defer text release\n", .{});
 
     switch (image.pixels) {
         .rgba32 => |pixels| {
@@ -125,6 +132,7 @@ pub fn init() !Self {
         .label = "sdf_view",
     });
     defer tex_view.release();
+    std.debug.print("tex_view release\n", .{});
 
     var sampler = core.device.createSampler(&gpu.Sampler.Descriptor{
         .label = "sampler",
@@ -133,6 +141,7 @@ pub fn init() !Self {
         .mipmap_filter = .linear,
     });
     defer sampler.release();
+    std.debug.print("sampler\n", .{});
 
     var projection_matrix_buffer = core.device.createBuffer(&gpu.Buffer.Descriptor{
         .label = "projection matrix",

@@ -10,7 +10,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     const app = try mach_core.App.init(b, mach_core_dep.builder, .{
-        .name = "ilo-nanpa-pi-ilo-nanpa",
+        .name = "MSDF",
         .src = "src/main.zig",
         .target = target,
         .optimize = optimize,

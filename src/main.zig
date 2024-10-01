@@ -19,7 +19,7 @@ format_settings: Renderer.TextWriter.NumberFormattingOptions = .{},
 
 pub fn init(app: *App) !void {
     try core.init(.{
-        .title = "ilo nanpa pi ilo nanpa",
+        .title = "MSDF",
         .is_app = true,
         .power_preference = .low_power,
     });
@@ -88,119 +88,160 @@ pub fn update(app: *App) !bool {
 
     {
         var text_writer = app.renderer.writer(math.vec2(10, 10), math.vec4(1, 1, 1, 1), number_size);
-        try text_writer.writeAll(&.{ .nanpa, .colon });
-        try text_writer.writeNumber(app.working_number, app.format_settings);
+try text_writer.writeAll(&.{
+    .exclamation_mark,
+    .quotation_mark,
+    .number_sign,
+    .dollar_sign,
+    .percent_sign,
+    .ampersand,
+    .apostrophe,
+    .left_parenthesis,
+    .right_parenthesis,
+    .asterisk,
+    .plus_sign,
+    .comma,
+    .minus_sign,
+    .period,
+    .slash,
+    .zero,
+    .one,
+    .two,
+    .three,
+    .four,
+    .five,
+    .six,
+    .seven,
+    .eight,
+    .nine,
+    .colon,
+});
+text_writer.curr_pos = math.vec2(10, 125);
+try text_writer.writeAll(&.{
+    .semicolon,
+    .less_than_sign,
+    .equal_sign,
+    .greater_than_sign,
+    .question_mark,
+    .at_sign,
+    .A,
+    .B,
+    .C,
+    .D,
+    .E,
+    .F,
+    .G,
+    .H,
+    .I,
+    .J,
+    .K,
+    .L,
+    .M,
+    .N,
+    .O,
+    .P,
+    .Q,
+    .R,
+    });
+
+text_writer.curr_pos = math.vec2(10, 250);
+try text_writer.writeAll(&.{
+    .S,
+    .T,
+    .U,
+    .V,
+    .W,
+    .X,
+    .Y,
+    .Z,
+    .left_square_bracket,
+    .backslash,
+    .right_square_bracket,
+    .caret,
+    .underscore,
+    .grave_accent,
+    .a,
+    .b,
+    .c,
+    .d,
+    .e,
+    .f,
+    .g,
+    .h,
+    .i,
+    .j,
+    .k,
+    .l,
+    });
+text_writer.curr_pos = math.vec2(10, 375);
+try text_writer.writeAll(&.{
+    .m,
+    .n,
+    .o,
+    .p,
+    .q,
+    .r,
+    .s,
+    .t,
+    .u,
+    .v,
+    .w,
+    .x,
+    .y,
+    .z,
+    .left_curly_brace,
+    .vertical_bar,
+    .right_curly_brace,
+    .tilde,
+});
+
+
     }
 
-    const reset_button_location = try app.renderer.renderButton(
-        math.vec2(10, 10 + number_size),
-        math.vec2(0, 0),
-        math.vec4(0.5, 0.5, 0.5, 1),
-        &.{ .o, .tawa, .e, .nanpa, .tawa, .ala },
-        64,
-        .tl,
-    );
-    if (button(reset_button_location, interact_loc)) {
-        app.working_number = 0;
-    }
+    //const reset_button_location = try app.renderer.renderButton(
+    //    math.vec2(10, 10 + number_size),
+    //    math.vec2(0, 0),
+    //    math.vec4(0.5, 0.5, 0.5, 1),
+    //    &.{ .o, .tawa, .e, .nanpa, .tawa, .ala },
+    //    64,
+    //    .tl,
+    //);
+    //if (button(reset_button_location, interact_loc)) {
+    //    app.working_number = 0;
+    //}
 
-    const en_text = try app.renderer.writeText(math.vec2(10, number_size + reset_button_location.size.y() + 10 + 10 + Renderer.button_text_padding), 64, &.{ .en, .colon });
+    //const en_text = try app.renderer.writeText(math.vec2(10, number_size + reset_button_location.size.y() + 10 + 10 + Renderer.button_text_padding), 64, &.{ .en, .colon });
 
-    var last_button_location: Renderer.Bounds = .{ .pos = math.vec2(en_text.size.x(), 10 + number_size + reset_button_location.size.y() + 10), .size = math.vec2(0, 0) };
+    //var last_button_location: Renderer.Bounds = .{ .pos = math.vec2(en_text.size.x(), 10 + number_size + reset_button_location.size.y() + 10), .size = math.vec2(0, 0) };
 
-    inline for (&.{
-        .{ &.{.ale}, 100 },
-        .{ &.{.mute}, 20 },
-        .{ &.{.luka}, 5 },
-        .{ &.{.tu}, 2 },
-        .{ &.{.wan}, 1 },
-    }) |item| {
-        last_button_location = try app.renderer.renderButton(
-            last_button_location.pos.add(&math.vec2(last_button_location.size.x() + 10, 0)),
-            math.vec2(0, 0),
-            math.vec4(0.5, 0.5, 0.5, 1),
-            item[0],
-            64,
-            .tl,
-        );
-        if (button(last_button_location, interact_loc)) {
-            app.working_number += item[1];
-        }
-    }
+    //inline for (&.{
+    //    .{ &.{.ale}, 100 },
+    //    .{ &.{.mute}, 20 },
+    //    .{ &.{.luka}, 5 },
+    //    .{ &.{.tu}, 2 },
+    //    .{ &.{.wan}, 1 },
+    //}) |item| {
+    //    last_button_location = try app.renderer.renderButton(
+    //        last_button_location.pos.add(&math.vec2(last_button_location.size.x() + 10, 0)),
+    //        math.vec2(0, 0),
+    //        math.vec4(0.5, 0.5, 0.5, 1),
+    //        item[0],
+    //        64,
+    //        .tl,
+    //    );
+    //    if (button(last_button_location, interact_loc)) {
+    //        app.working_number += item[1];
+    //    }
+    //}
 
-    const weka_text = try app.renderer.writeText(
-        math.vec2(10, last_button_location.pos.y() + last_button_location.size.y() + 10 + Renderer.button_text_padding),
-        64,
-        &.{ .weka, .colon },
-    );
+    //const weka_text = try app.renderer.writeText(
+    //    math.vec2(10, last_button_location.pos.y() + last_button_location.size.y() + 10 + Renderer.button_text_padding),
+    //    64,
+    //    &.{ .weka, .colon },
+    //);
 
-    last_button_location = .{ .pos = math.vec2(weka_text.size.x(), last_button_location.pos.y() + last_button_location.size.y() + 10), .size = math.vec2(0, 0) };
+    //last_button_location = .{ .pos = math.vec2(weka_text.size.x(), last_button_location.pos.y() + last_button_location.size.y() + 10), .size = math.vec2(0, 0) };
 
-    inline for (&.{
-        .{ &.{.ale}, -100 },
-        .{ &.{.mute}, -20 },
-        .{ &.{.luka}, -5 },
-        .{ &.{.tu}, -2 },
-        .{ &.{.wan}, -1 },
-    }) |item| {
-        last_button_location = try app.renderer.renderButton(
-            last_button_location.pos.add(&math.vec2(last_button_location.size.x() + 10, 0)),
-            math.vec2(0, 0),
-            math.vec4(0.5, 0.5, 0.5, 1),
-            item[0],
-            64,
-            .tl,
-        );
-        if (button(last_button_location, interact_loc)) {
-            app.working_number += item[1];
-        }
-    }
-
-    last_button_location = .{ .pos = math.vec2(0, last_button_location.pos.y() + last_button_location.size.y() + 10), .size = math.vec2(0, 0) };
-
-    last_button_location = try app.renderer.renderButton(
-        last_button_location.pos.add(&math.vec2(last_button_location.size.x() + 10, 0)),
-        math.vec2(0, 0),
-        math.vec4(0.5, 0.5, 0.5, 1),
-        if (app.format_settings.san) &.{ .san, .li, .lon } else &.{ .san, .li, .weka },
-        64,
-        .tl,
-    );
-    if (button(last_button_location, interact_loc)) {
-        app.format_settings.san = !app.format_settings.san;
-    }
-
-    last_button_location = try app.renderer.renderButton(
-        last_button_location.pos.add(&math.vec2(last_button_location.size.x() + 10, 0)),
-        math.vec2(0, 0),
-        math.vec4(0.5, 0.5, 0.5, 1),
-        if (app.format_settings.likujo) &.{ .likujo, .li, .lon } else &.{ .likujo, .li, .weka },
-        64,
-        .tl,
-    );
-    if (button(last_button_location, interact_loc)) {
-        app.format_settings.likujo = !app.format_settings.likujo;
-    }
-
-    last_button_location = try app.renderer.renderButton(
-        last_button_location.pos.add(&math.vec2(last_button_location.size.x() + 10, 0)),
-        math.vec2(0, 0),
-        math.vec4(0.5, 0.5, 0.5, 1),
-        switch (app.format_settings.four_type) {
-            .po => &.{ .po, .li, .lon },
-            .neja => &.{ .neja, .li, .lon },
-            .none => &.{ .po, .en, .neja, .li, .weka },
-        },
-        64,
-        .tl,
-    );
-    if (button(last_button_location, interact_loc)) {
-        app.format_settings.four_type = switch (app.format_settings.four_type) {
-            .po => .neja,
-            .neja => .none,
-            .none => .po,
-        };
-    }
 
     try app.renderer.end();
     try app.renderer.draw(pass);

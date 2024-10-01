@@ -62,7 +62,7 @@ pub fn init(allocator: std.mem.Allocator, gfx: *Gfx) !Self {
     self.cpu_idx = try self.allocator.alloc(IndexType, idx_per_buf);
 
     //I think quad_per_buf * 3 is a good amount of tris for most 2d scenes
-    const common_max_capacity = 3;
+    const common_max_capacity = 4;
 
     try self.recorded_buffers.ensureTotalCapacity(common_max_capacity);
     try self.queued_buffers.ensureTotalCapacity(common_max_capacity);
@@ -270,7 +270,7 @@ pub fn textWidth(self: *Self, codepoints: []const Codepoint, text_size: f32) f32
         //Every character should be monospace
         const size = math.vec2(text_size, text_size);
 
-        width += (size.x() + letter_padding) * (text_size / @as(f32, @floatFromInt(self.gfx.atlas.value.atlas.size)));
+        width += (size.x() + letter_padding) * (text_size / @as(f32, self.gfx.atlas.value.atlas.size));
     }
 
     if (codepoints.len > 0) {
@@ -353,6 +353,7 @@ pub const TextWriter = struct {
 
     pub fn writeNumber(self: *TextWriter, number: anytype, options: NumberFormattingOptions) !void {
         var sum = number;
+        _ = options;
 
         var negative = false;
 
@@ -364,57 +365,14 @@ pub const TextWriter = struct {
         }
 
         if (sum == 0) {
-            try self.write(.ala);
+            try self.write(.zero);
             return;
         }
 
         while (sum >= 100) : (sum -= 100) {
-            try self.write(.ale);
+            try self.write(.one);
         }
 
-        while (sum >= 20) : (sum -= 20) {
-            try self.write(.mute);
-        }
-
-        if (options.likujo)
-            while (sum >= 7) : (sum -= 7) {
-                try self.write(.likujo);
-            };
-
-        while (sum >= 5) : (sum -= 5) {
-            try self.write(.luka);
-        }
-
-        switch (options.four_type) {
-            .neja, .po => |four_type| {
-                while (sum >= 4) : (sum -= 4) {
-                    switch (four_type) {
-                        .neja => try self.write(.neja),
-                        .po => try self.write(.po),
-                        else => unreachable,
-                    }
-                }
-            },
-            .none => {},
-        }
-
-        if (options.san) {
-            while (sum >= 3) : (sum -= 3) {
-                try self.write(.san);
-            }
-        }
-
-        while (sum >= 2) : (sum -= 2) {
-            try self.write(.tu);
-        }
-
-        while (sum >= 1) : (sum -= 1) {
-            try self.write(.wan);
-        }
-
-        if (negative) {
-            try self.write(.weka);
-        }
     }
 };
 
@@ -430,8 +388,8 @@ pub fn writer(self: *Self, pos: math.Vec2, col: math.Vec4, text_size: f32) TextW
         .curr_pos = pos,
         .color = col,
         .renderer = self,
-        .text_size = @floatFromInt(self.gfx.atlas.value.atlas.size),
-        .scale = text_size / @as(f32, @floatFromInt(self.gfx.atlas.value.atlas.size)),
+        .text_size = self.gfx.atlas.value.atlas.size,
+        .scale = text_size / @as(f32, self.gfx.atlas.value.atlas.size),
     };
 }
 
